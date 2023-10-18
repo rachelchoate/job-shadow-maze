@@ -18,8 +18,7 @@ const Game = () => {
     const game = useGame(CanvasOptions);
 
     const run = () => {
-        console.log('RUNNING!');
-        setPlayerPos(Player.startPos);
+        setPlayerPos(Player.startPos); // Reset starting position.
         let timer = 0;
         commands.forEach((com, i) => {
             try {
@@ -27,6 +26,7 @@ const Game = () => {
                 const args = com.split('(')[1].split(')')[0].split(',');
                 setTimeout(() => {
                     game[command](...args);
+                    // Make sure this timer doesn't overlap the other one:
                 }, timer += (args[0] * 20) + 500);
             } catch (e) {
                 game.setError([...game.error, `Invalid command: ${e}`]);
