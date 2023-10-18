@@ -1,18 +1,14 @@
 /** @module hooks/gameHook */
 import { useState } from 'react';
 import useCanvas from './canvasHook';
+import state from '../state';
 
-const Player = {
-    d: 10,
-    color: 'tomato',
-    startPos: [30, 990]
-};
+const { Player, getPlayerPos, setPlayerPos, } = state;
 
 const useGame = (initOptions) => {
     const canvas = useCanvas(initOptions);
     const [mapAssets, setMapAssets] = useState([]);
     const [error, setError] = useState([]);
-    const [playerPos, setPlayerPos] = useState([0, 0]);
 
     const drawPlayer = (pos) => {
         const tempColor = canvas.drawColor;
@@ -199,7 +195,7 @@ const useGame = (initOptions) => {
     };
 
     const movePlayer = (direction, len) => {
-        const newPos = Object.assign([], playerPos);
+        const newPos = Object.assign([], getPlayerPos());
         switch(direction) {
             case 'right':
                 newPos[0] = newPos[0] + len;
@@ -225,14 +221,13 @@ const useGame = (initOptions) => {
         }
     };
 
-    const animateMovePlayer = (direction, len, i = 0) => {
+    const animateMovePlayer = (direction, len, i = 0, timer=0) => {
         const movePlayerOne = () => movePlayer(direction, Player.d * 2);
-        movePlayerOne();
         if (i < len) {
             setTimeout(() => {
-                console.log('set timeout');
-                animateMovePlayer(direction, len, i += 1);
-            }, 400);
+                movePlayerOne();
+                animateMovePlayer(direction, len, i += 1, timer += 10);
+            }, timer);
         }
     };
 

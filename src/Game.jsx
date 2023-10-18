@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import useGame from './hooks/gameHook';
+import state from './state';
+
+const { Player, setPlayerPos } = state;
 
 const CanvasOptions = {
     id: 'gameboard-canvas',
@@ -15,11 +18,16 @@ const Game = () => {
     const game = useGame(CanvasOptions);
 
     const run = () => {
+        console.log('RUNNING!');
+        setPlayerPos(Player.startPos);
+        let timer = 0;
         commands.forEach((com, i) => {
             try {
                 const command = com.split('(')[0];
                 const args = com.split('(')[1].split(')')[0].split(',');
-                game[command](...args);
+                setTimeout(() => {
+                    game[command](...args);
+                }, timer += (args[0] * 20) + 500);
             } catch (e) {
                 game.setError([...game.error, `Invalid command: ${e}`]);
             }
